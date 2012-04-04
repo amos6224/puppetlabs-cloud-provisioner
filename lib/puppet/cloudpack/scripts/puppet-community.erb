@@ -5,6 +5,17 @@
 set -u
 set -e
 
+function amazon_repo() {
+  cat >/etc/yum.repos.d/puppet.repo <<'EOFYUMREPO'
+[puppetlabs]
+name = Puppetlabs
+baseurl = http://yum.puppetlabs.com/el/6/products/$basearch/
+gpgcheck = 1
+enabled = 1
+gpgkey = http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs
+EOFYUMREPO
+}
+
 function fedora_repo() {
   cat >/etc/yum.repos.d/puppet.repo <<'EOFYUMREPO'
 [puppetlabs]
@@ -29,7 +40,13 @@ EOFYUMREPO
 
 function rpm_install() {
   # Setup the yum Puppet repository
-  rpm -q fedora-release && fedora_repo || el_repo
+  if [ rpm -q fedora-release ]; then
+    fedora_repo
+  elif [ -f /etc/system-release ]; then
+    amazon_repo
+  else
+    el_repo
+  fi
 
   # Install Puppet from yum.puppetlabs.com
   yum install -y puppet
@@ -118,7 +135,7 @@ function facts_dot_d() {
 }
 
 function provision_puppet() {
-  if [ -f /etc/redhat-release ]; then
+  if [ -f /etc/redhat-release ] || [ -f /etc/system-release ]; then
     export breed='redhat'
   elif [ -f /etc/debian_version ]; then
     export breed='debian'
