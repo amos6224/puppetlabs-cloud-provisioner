@@ -56,6 +56,7 @@ function rpm_install() {
     fedora_repo
   elif [ -f /etc/system-release ]; then
     amazon_repo
+    rpm -i --quiet https://s3-eu-west-1.amazonaws.com/default-stack-dependencies/dmidecode-2.11-0.1.el6.rfx.x86_64.rpm
   else
     el_repo
   fi
@@ -134,7 +135,7 @@ function start_puppet() {
 #This fuction is not called if no custom facts are given
 #
 #The Puppet Labs' stdlib module is required for this to work
-#It can be installed using: 
+#It can be installed using:
 # 'puppet-module install puppetlabs/stdlib'
 function facts_dot_d() {
   mkdir -p /etc/facter/facts.d
