@@ -8,12 +8,24 @@ set -e
 function amazon_repo() {
   cat >/etc/yum.repos.d/puppet.repo <<'EOFYUMREPO'
 [puppetlabs]
-name = Puppetlabs
-baseurl = http://yum.puppetlabs.com/el/6/products/$basearch/
-gpgcheck = 1
-enabled = 1
-gpgkey = http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs
+name=Puppetlabs
+baseurl=http://yum.puppetlabs.com/el/6/products/$basearch/
+gpgcheck=1
+priority=1
+enabled=1
+gpgkey=http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs
 EOFYUMREPO
+
+  cat >/etc/yum.repos.d/puppet-dependencies.repo <<'EOFYUMREPO'
+[puppetlabs-dependencies]
+name=Puppetlabs Dependencies
+baseurl=http://yum.puppetlabs.com/el/6/dependencies/$basearch/
+gpgcheck=1
+priority=5
+enabled=1
+gpgkey=http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs
+EOFYUMREPO
+
 }
 
 function fedora_repo() {
